@@ -1,0 +1,835 @@
+/* ============================================
+   RS Dataset Factory - MF Dashboard Dark Theme
+   基於 MF-TurbineMonitor 大屏風格 v3.0 + Academic RS Style
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ============================================
+   CSS 變數系統 — MF 色彩語言
+   ============================================ */
+:root {
+  --bg-primary: #000000;
+  --bg-secondary: #05326a;
+  --bg-panel: rgba(6, 30, 93, 0.85);
+  --bg-card: rgba(5, 50, 106, 0.6);
+  --bg-elevated: rgba(10, 40, 80, 0.9);
+  --bg-surface: rgba(8, 35, 70, 0.7);
+
+  --accent-cyan: #74f7fd;
+  --accent-blue: #5bc7fa;
+  --accent-green: #74fabd;
+  --accent-teal: #5fb9c7;
+  --accent-yellow: #f0c040;
+
+  --gradient-title: linear-gradient(180deg, #b9cfff 0%, #ffffff 100%);
+  --gradient-chart-green: linear-gradient(180deg, rgba(0, 254, 169, 0.8) 0%, rgba(0, 254, 169, 0.1) 100%);
+  --gradient-chart-blue: linear-gradient(180deg, rgba(87, 153, 214, 0.8) 0%, rgba(87, 153, 214, 0.1) 100%);
+  --gradient-primary: linear-gradient(135deg, #74f7fd 0%, #5bc7fa 100%);
+  --gradient-accent: linear-gradient(135deg, #74fabd 0%, #74f7fd 100%);
+
+  --text-primary: #ffffff;
+  --text-secondary: #b9cfff;
+  --text-tertiary: rgba(185, 207, 255, 0.6);
+  --text-muted: rgba(185, 207, 255, 0.4);
+
+  --border-subtle: rgba(91, 199, 250, 0.15);
+  --border-default: rgba(116, 247, 253, 0.25);
+  --border-glow: rgba(116, 247, 253, 0.4);
+  --grid-line: rgba(200, 200, 200, 0.12);
+
+  --glow-cyan: 0 0 12px rgba(116, 247, 253, 0.4), 0 0 30px rgba(116, 247, 253, 0.15);
+  --glow-blue: 0 0 12px rgba(91, 199, 250, 0.4), 0 0 30px rgba(91, 199, 250, 0.15);
+  --glow-green: 0 0 12px rgba(116, 250, 189, 0.4), 0 0 30px rgba(116, 250, 189, 0.15);
+
+  --success: #74fabd;
+  --warning: #f0c040;
+  --error: #ff4444;
+  --info: #74f7fd;
+
+  --font-title: 'DouyuFont', 'Noto Sans SC', sans-serif;
+  --font-body: 'SarasaMonoSC', 'Noto Sans SC', monospace;
+  --font-number: 'DincorosBlack', monospace;
+  --font-mono: 'SarasaMonoSC', 'JetBrains Mono', monospace;
+  --font-serif: 'Noto Serif SC', 'Source Serif 4', 'Georgia', serif;
+  --font-serif-en: 'Source Serif 4', 'Georgia', serif;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  --panel-title-height: 42px;
+  --header-height: 80px;
+  --sidebar-width: 220px;
+  --sidebar-collapsed: 64px;
+}
+
+/* ============================================
+   基礎重置
+   ============================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ============================================
+   排版系統
+   ============================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--accent-blue);
+}
+
+/* ============================================
+   MF 漸層文字（標題用）
+   ============================================ */
+.gradient-text,
+.mf-title-text {
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.font-title { font-family: var(--font-title); }
+.font-number { font-family: var(--font-number); }
+.font-mono { font-family: var(--font-mono); }
+
+/* ============================================
+   MF 面板背景效果
+   ============================================ */
+.mf-panel {
+  position: relative;
+  background: url('@/assets/images/mf/panel_body_bg.png') no-repeat center / 100% 100%;
+  overflow: hidden;
+}
+
+.mf-panel-title {
+  position: relative;
+  height: var(--panel-title-height);
+  background: url('@/assets/images/mf/panel_title_bg.png') no-repeat center / 100% 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 70px;
+  font-family: var(--font-title);
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+/* ============================================
+   MF 按鈕
+   ============================================ */
+.mf-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 10px 24px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: rgba(5, 50, 106, 0.8);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+.mf-btn:hover {
+  background: rgba(116, 247, 253, 0.15);
+  border-color: var(--accent-cyan);
+  box-shadow: var(--glow-cyan);
+  color: var(--accent-cyan);
+}
+
+.mf-btn:active {
+  transform: scale(0.97);
+}
+
+.mf-btn-primary {
+  background: linear-gradient(135deg, rgba(116, 247, 253, 0.2) 0%, rgba(91, 199, 250, 0.3) 100%);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+.mf-btn-primary:hover {
+  background: linear-gradient(135deg, rgba(116, 247, 253, 0.35) 0%, rgba(91, 199, 250, 0.45) 100%);
+  box-shadow: var(--glow-cyan);
+}
+
+.mf-btn-footer {
+  background: url('@/assets/images/mf/footer_item_bg.png') no-repeat center / 100% 100%;
+  border: none;
+  padding: 12px 40px;
+  font-family: var(--font-title);
+  font-size: 15px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.mf-btn-footer:hover,
+.mf-btn-footer.active {
+  color: var(--accent-blue);
+  text-shadow: 0 0 10px rgba(91, 199, 250, 0.5);
+}
+
+/* ============================================
+   表單元素（MF 風格）
+   ============================================ */
+input, textarea, select {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-primary);
+  background: rgba(5, 50, 106, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 2px rgba(116, 247, 253, 0.15);
+  background: rgba(5, 50, 106, 0.7);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+}
+
+input[type="number"] {
+  font-family: var(--font-number);
+}
+
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2374f7fd' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* ============================================
+   上傳區域
+   ============================================ */
+.upload-zone {
+  position: relative;
+  padding: 48px;
+  border: 2px dashed var(--border-default);
+  border-radius: var(--radius-lg);
+  background: rgba(5, 50, 106, 0.3);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.upload-zone:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(5, 50, 106, 0.5);
+  box-shadow: 0 0 30px rgba(116, 247, 253, 0.1);
+}
+
+.upload-zone.dragging {
+  border-color: var(--accent-green);
+  background: rgba(116, 250, 189, 0.08);
+}
+
+/* ============================================
+   終端/日誌
+   ============================================ */
+.terminal-log {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  overflow-x: auto;
+  color: var(--accent-green);
+}
+
+.terminal-log .log-time { color: var(--text-muted); }
+.terminal-log .log-info { color: var(--accent-cyan); }
+.terminal-log .log-warn { color: var(--warning); }
+.terminal-log .log-error { color: var(--error); }
+.terminal-log .log-success { color: var(--success); }
+
+/* ============================================
+   進度條（MF 青色漸層）
+   ============================================ */
+.progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+  box-shadow: 0 0 8px rgba(116, 247, 253, 0.4);
+}
+
+/* ============================================
+   步驟指示器
+   ============================================ */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-node {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-number);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all var(--transition-base);
+}
+
+.step-node.pending {
+  background: rgba(5, 50, 106, 0.5);
+  border: 2px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.step-node.active {
+  background: rgba(116, 247, 253, 0.15);
+  border: 2px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: var(--glow-cyan);
+  animation: stepPulse 2s ease-in-out infinite;
+}
+
+.step-node.completed {
+  background: rgba(116, 250, 189, 0.15);
+  border: 2px solid var(--accent-green);
+  color: var(--accent-green);
+}
+
+@keyframes stepPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(116, 247, 253, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(116, 247, 253, 0.6); }
+}
+
+.step-connector {
+  width: 60px;
+  height: 2px;
+  background: var(--border-subtle);
+}
+
+.step-connector.active {
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+}
+
+.step-connector.completed {
+  background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+}
+
+/* ============================================
+   標籤系統
+   ============================================ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.tag-cyan {
+  background: rgba(116, 247, 253, 0.12);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(116, 247, 253, 0.3);
+}
+
+.tag-green {
+  background: rgba(116, 250, 189, 0.12);
+  color: var(--accent-green);
+  border: 1px solid rgba(116, 250, 189, 0.3);
+}
+
+.tag-blue {
+  background: rgba(91, 199, 250, 0.12);
+  color: var(--accent-blue);
+  border: 1px solid rgba(91, 199, 250, 0.3);
+}
+
+.tag-warning {
+  background: rgba(240, 192, 64, 0.12);
+  color: var(--accent-yellow);
+  border: 1px solid rgba(240, 192, 64, 0.3);
+}
+
+.tag-error {
+  background: rgba(255, 68, 68, 0.12);
+  color: var(--error);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+}
+
+/* ============================================
+   數據顯示
+   ============================================ */
+.data-value {
+  font-family: var(--font-number);
+  font-size: 28px;
+  color: var(--accent-cyan);
+}
+
+.data-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.stat-card {
+  padding: var(--space-lg);
+  background: rgba(5, 50, 106, 0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(5, 50, 106, 0.6);
+}
+
+/* ============================================
+   滾動條
+   ============================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(5, 50, 106, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(116, 247, 253, 0.25);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(116, 247, 253, 0.45);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(116, 247, 253, 0.25) rgba(5, 50, 106, 0.3);
+}
+
+/* ============================================
+   代碼塊
+   ============================================ */
+pre, code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+code {
+  padding: 2px 6px;
+  background: rgba(5, 50, 106, 0.6);
+  border-radius: var(--radius-sm);
+  color: var(--accent-cyan);
+}
+
+pre {
+  padding: var(--space-md);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+pre code {
+  padding: 0;
+  background: none;
+}
+
+/* ============================================
+   MF 動畫 — 光帶、跑馬燈、輪播
+   ============================================ */
+@keyframes lightGo {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes textRoll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes rowOut {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-100%); }
+}
+
+@keyframes scanMove {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.fade-in { animation: fadeIn 0.5s ease forwards; }
+.slide-up { animation: slideUp 0.5s ease forwards; }
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* ============================================
+   Loading
+   ============================================ */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(116, 247, 253, 0.15);
+  border-top-color: var(--accent-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ============================================
+   選取文字
+   ============================================ */
+::selection {
+  background: rgba(116, 247, 253, 0.3);
+  color: var(--text-primary);
+}
+
+/* ============================================
+   焦點樣式
+   ============================================ */
+:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   工具類
+   ============================================ */
+.text-cyan { color: var(--accent-cyan); }
+.text-blue { color: var(--accent-blue); }
+.text-green { color: var(--accent-green); }
+.text-muted { color: var(--text-muted); }
+.bg-panel { background: var(--bg-panel); }
+.bg-card { background: var(--bg-card); }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.gap-6 { gap: 24px; }
+.p-2 { padding: 8px; }
+.p-3 { padding: 12px; }
+.p-4 { padding: 16px; }
+.p-6 { padding: 24px; }
+.m-0 { margin: 0; }
+.mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.text-center { text-align: center; }
+.text-sm { font-size: 14px; }
+.text-xs { font-size: 12px; }
+.font-bold { font-weight: 700; }
+.cursor-pointer { cursor: pointer; }
+.overflow-hidden { overflow: hidden; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+
+/* ============================================
+   Ant Design 覆蓋（MF 色系）
+   ============================================ */
+.ant-btn-primary {
+  background: linear-gradient(135deg, rgba(116, 247, 253, 0.2), rgba(91, 199, 250, 0.3)) !important;
+  border-color: var(--accent-cyan) !important;
+  color: var(--accent-cyan) !important;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, rgba(116, 247, 253, 0.35), rgba(91, 199, 250, 0.45)) !important;
+  box-shadow: var(--glow-cyan) !important;
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker {
+  background: rgba(5, 50, 106, 0.5) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-input:focus,
+.ant-input-affix-wrapper-focused,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 0 2px rgba(116, 247, 253, 0.15) !important;
+}
+
+.ant-table {
+  background: transparent !important;
+}
+
+.ant-table-thead > tr > th {
+  background: rgba(5, 50, 106, 0.6) !important;
+  border-bottom-color: var(--border-subtle) !important;
+  color: var(--text-secondary) !important;
+  font-family: var(--font-body);
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom-color: rgba(91, 199, 250, 0.08) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: rgba(116, 247, 253, 0.06) !important;
+}
+
+.ant-modal-content {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+}
+
+.ant-modal-header {
+  background: transparent !important;
+  border-bottom-color: var(--border-subtle) !important;
+}
+
+.ant-modal-title {
+  color: var(--text-primary) !important;
+  font-family: var(--font-title) !important;
+}
+
+.ant-tabs-tab {
+  color: var(--text-tertiary) !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--accent-cyan) !important;
+}
+
+.ant-tabs-ink-bar {
+  background: var(--accent-cyan) !important;
+}
+
+.ant-upload-drag {
+  background: rgba(5, 50, 106, 0.3) !important;
+  border-color: var(--border-default) !important;
+}
+
+.ant-upload-drag:hover {
+  border-color: var(--accent-cyan) !important;
+}
+
+.ant-message-notice-content {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-slider-track {
+  background: var(--accent-cyan) !important;
+}
+
+.ant-slider-handle {
+  border-color: var(--accent-cyan) !important;
+}
+
+.ant-slider-rail {
+  background: rgba(5, 50, 106, 0.8) !important;
+}
+
+.ant-popconfirm .ant-btn-primary {
+  background: var(--accent-cyan) !important;
+  border-color: var(--accent-cyan) !important;
+  color: #000 !important;
+}
+
+/* ============================================
+   列印與無障礙
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  body { background: white; color: black; }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================
+   Academic / Research Style Utilities
+   ============================================ */
+.font-serif { font-family: var(--font-serif); }
+.font-serif-en { font-family: var(--font-serif-en); }
+
+.academic-label {
+  font-family: var(--font-serif-en);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.academic-value {
+  font-family: var(--font-number);
+  font-size: 20px;
+  color: var(--accent-cyan);
+  line-height: 1.2;
+}
+
+.academic-unit {
+  font-family: var(--font-serif-en);
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-left: 2px;
+}
+
+.academic-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(116, 247, 253, 0.2) 20%,
+    rgba(116, 247, 253, 0.2) 80%,
+    transparent
+  );
+  margin: 8px 0;
+}
+
+.metric-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  padding: 2px 8px;
+  background: rgba(5, 50, 106, 0.5);
+  border: 1px solid rgba(116, 247, 253, 0.12);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.metric-badge .metric-key {
+  color: var(--text-muted);
+  font-family: var(--font-serif-en);
+  font-style: italic;
+  font-size: 10px;
+}
+
+.metric-badge .metric-val {
+  color: var(--accent-cyan);
+  font-family: var(--font-number);
+  font-size: 13px;
+}

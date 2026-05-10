@@ -1,0 +1,36 @@
+# RS Dataset Factory - Backend Dockerfile
+FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+
+WORKDIR /app
+
+# 安裝系統依賴
+RUN apt-get update && apt-get install -y \
+    libgdal-dev \
+    libgeos-dev \
+    libproj-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 複製依賴文件
+COPY requirements.txt .
+
+# 安裝 Python 依賴
+RUN pip install --no-cache-dir -r requirements.txt \
+    -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 複製應用代碼
+COPY backend/ ./backend/
+COPY sam3/ ./sam3/
+COPY weights/ ./weights/
+
+# 創建存儲目錄
+RUN mkdir -p uploads outputs logs
+
+# 設置環境變量
+ENV KMP_DUPLICATE_LIB_OK=TRUE
+ENV PYTHONPATH=/app
+
+# 暴露端口
+EXPOSE 8000
+
+# 啟動命令
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

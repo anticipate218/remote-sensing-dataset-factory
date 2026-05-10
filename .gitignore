@@ -1,0 +1,109 @@
+# =============================================================
+# Python
+# =============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+*.egg-info/
+*.egg
+.installed.cfg
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.ipynb_checkpoints/
+
+# =============================================================
+# Virtual envs
+# =============================================================
+venv/
+env/
+.venv/
+ENV/
+
+# =============================================================
+# Node / Frontend
+# =============================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+frontend/dist/
+frontend/.vite/
+frontend/.cache/
+.parcel-cache/
+
+# =============================================================
+# Editor / OS
+# =============================================================
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# =============================================================
+# Secrets - DO NOT COMMIT
+# =============================================================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+*.pem
+*.key
+
+# =============================================================
+# Model weights & datasets (用户需手动下载，请勿提交)
+# =============================================================
+weights/*.pt
+weights/*.pth
+weights/*.bin
+weights/*.safetensors
+weights/*.ckpt
+weights/*.onnx
+weights/**/*.pt
+weights/**/*.pth
+weights/**/*.bin
+weights/**/*.safetensors
+weights/**/*.ckpt
+weights/**/*.onnx
+
+# =============================================================
+# Runtime output
+# =============================================================
+uploads/*
+!uploads/.gitkeep
+outputs/*
+!outputs/.gitkeep
+logs/*
+!logs/.gitkeep
+*.log
+
+# =============================================================
+# Database
+# =============================================================
+*.db
+*.sqlite
+*.sqlite3
+users.db
+
+# =============================================================
+# Misc temp / debug
+# =============================================================
+_tmp_*.py
+tmp/
+temp/
+.cache/

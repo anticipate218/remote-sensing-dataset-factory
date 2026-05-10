@@ -1,0 +1,619 @@
+/* ============================================================
+ * AnnotationEditor 样式 v2
+ * 升级点：
+ *   - Canvas 背景：棋盘格 → 学术蓝图（细网格 + 粗网格 + 渐晕）
+ *   - 工具按钮：呼吸光晕 + 选中态发光 + FontAwesome 适配
+ *   - 状态栏：终端风 monospace + cyan accent
+ * ============================================================ */
+
+.annotation-editor {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 180px);
+  background: linear-gradient(180deg, #06182f 0%, #02060f 100%);
+  border-radius: 14px;
+  border: 1px solid rgba(116, 247, 253, 0.12);
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), inset 0 0 60px rgba(116, 247, 253, 0.03);
+}
+
+.annotation-workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ============================================================
+ * Canvas 容器 - 学术蓝图风格
+ * ============================================================ */
+.canvas-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background-color: #061629;
+  /* 细网格 + 粗网格双层叠加 + 极轻噪点 */
+  background-image:
+    /* 细网格 20px */
+    linear-gradient(rgba(91, 199, 250, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91, 199, 250, 0.06) 1px, transparent 1px),
+    /* 粗网格 100px */
+    linear-gradient(rgba(116, 247, 253, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(116, 247, 253, 0.10) 1px, transparent 1px),
+    /* 中心放射光晕 */
+    radial-gradient(ellipse at center, rgba(116, 247, 253, 0.04) 0%, transparent 70%);
+  background-size:
+    20px 20px,
+    20px 20px,
+    100px 100px,
+    100px 100px,
+    100% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 角落坐标标签 - 学术风 */
+.canvas-container::before {
+  content: 'CRS: EPSG:4326 · GRID 20px';
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-family: 'Source Serif 4', 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 10px;
+  color: rgba(116, 247, 253, 0.45);
+  letter-spacing: 1.5px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.canvas-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* 边缘渐暗 vignette */
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(2, 14, 31, 0.5) 100%
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+
+.canvas-wrapper {
+  position: relative;
+  transition: transform 0.1s ease-out;
+  z-index: 10;
+  /* 给图像加微妙的科技光环 */
+  box-shadow:
+    0 0 0 1px rgba(116, 247, 253, 0.3),
+    0 0 30px rgba(116, 247, 253, 0.15),
+    0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.image-canvas,
+.annotation-canvas,
+.overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.image-canvas { z-index: 1; }
+.annotation-canvas { z-index: 2; }
+.overlay-canvas {
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* 加载遮罩 */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(2, 14, 31, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+}
+
+.loading-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(116, 247, 253, 0.2);
+  border-top-color: #74f7fd;
+  border-right-color: #74fabd;
+  border-radius: 50%;
+  animation: spin 1.2s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite;
+  box-shadow: 0 0 16px rgba(116, 247, 253, 0.3);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-overlay span {
+  color: rgba(116, 247, 253, 0.85);
+  font-family: 'SarasaMonoSC', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+/* ============================================================
+ * 状态栏 - 终端风
+ * ============================================================ */
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 7px 16px;
+  background: linear-gradient(180deg, rgba(5, 50, 106, 0.5) 0%, rgba(2, 14, 31, 0.7) 100%);
+  border-top: 1px solid rgba(116, 247, 253, 0.15);
+  font-family: 'SarasaMonoSC', 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(185, 207, 255, 0.7);
+  letter-spacing: 0.5px;
+}
+
+.status-bar span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-bar span:not(:last-child)::after {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 12px;
+  background: rgba(116, 247, 253, 0.15);
+  margin-left: 18px;
+}
+
+.status-bar .status-key {
+  color: rgba(116, 247, 253, 0.55);
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.status-bar .status-val {
+  color: #fff;
+}
+
+.status-bar .status-pixel {
+  color: #74f7fd;
+}
+
+.status-bar .status-class-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(116, 247, 253, 0.08);
+  border: 1px solid rgba(116, 247, 253, 0.25);
+  color: #fff;
+  font-size: 10px;
+}
+
+.status-bar .status-class-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================================
+ * 工具栏 - 玻璃态 + 分组光带
+ * ============================================================ */
+.annotation-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(5, 50, 106, 0.65) 0%, rgba(2, 14, 31, 0.5) 100%);
+  border-bottom: 1px solid rgba(116, 247, 253, 0.18);
+  backdrop-filter: blur(8px);
+  position: relative;
+  flex-wrap: wrap;
+  row-gap: 6px;
+}
+
+.annotation-toolbar::after {
+  /* 底部细高亮线 */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(116, 247, 253, 0.4), transparent);
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(116, 247, 253, 0.08);
+  border-radius: 10px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 22px;
+  background: linear-gradient(180deg, transparent, rgba(116, 247, 253, 0.25), transparent);
+  margin: 0 4px;
+}
+
+/* 工具按钮 */
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(185, 207, 255, 0.75);
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+.toolbar-btn:hover:not(:disabled) {
+  background: rgba(116, 247, 253, 0.12);
+  border-color: rgba(116, 247, 253, 0.4);
+  color: #74f7fd;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(116, 247, 253, 0.2);
+}
+
+.toolbar-btn.active {
+  background: linear-gradient(135deg, rgba(116, 247, 253, 0.25), rgba(91, 199, 250, 0.15));
+  border-color: #74f7fd;
+  color: #74f7fd;
+  box-shadow:
+    0 0 0 1px rgba(116, 247, 253, 0.25),
+    0 0 14px rgba(116, 247, 253, 0.45),
+    inset 0 0 8px rgba(116, 247, 253, 0.18);
+}
+
+/* 选中按钮的呼吸光晕脉冲 */
+.toolbar-btn-pulse {
+  position: absolute;
+  inset: -2px;
+  border-radius: 10px;
+  border: 1px solid rgba(116, 247, 253, 0.55);
+  pointer-events: none;
+  animation: tool-pulse 2s ease-in-out infinite;
+}
+
+@keyframes tool-pulse {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.toolbar-btn:disabled:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.06);
+  color: rgba(185, 207, 255, 0.4);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ============================================================
+ * 笔刷 / 容差控件
+ * ============================================================ */
+.brush-size-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+  background: rgba(116, 247, 253, 0.04);
+  border: 1px solid rgba(116, 247, 253, 0.12);
+  border-radius: 8px;
+}
+
+.brush-size-label {
+  font-family: 'SarasaMonoSC', 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #74f7fd;
+  min-width: 56px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.brush-size-slider {
+  width: 110px;
+  margin: 0 4px;
+}
+
+/* 工具提示条（polygon / rectangle / eyedropper hint） */
+.tool-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 11px;
+  color: rgba(116, 250, 189, 0.85);
+  background: rgba(116, 250, 189, 0.06);
+  border: 1px dashed rgba(116, 250, 189, 0.35);
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+}
+
+.tool-hint i {
+  color: #74fabd;
+}
+
+/* ============================================================
+ * 类别面板
+ * ============================================================ */
+.class-panel {
+  width: 200px;
+  background: linear-gradient(180deg, rgba(5, 50, 106, 0.4), rgba(2, 14, 31, 0.5));
+  border-right: 1px solid rgba(116, 247, 253, 0.12);
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.class-panel-title {
+  font-family: 'DouyuFont', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(116, 247, 253, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+}
+
+.class-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.class-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.class-item:hover {
+  background: rgba(116, 247, 253, 0.06);
+  border-color: rgba(116, 247, 253, 0.18);
+}
+
+.class-item.selected {
+  background: linear-gradient(90deg, rgba(116, 247, 253, 0.15), rgba(116, 247, 253, 0.04));
+  border-color: rgba(116, 247, 253, 0.45);
+  box-shadow: inset 3px 0 0 #74f7fd;
+}
+
+.class-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.class-name {
+  font-family: 'SarasaMonoSC', 'Inter', sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.class-shortcut {
+  font-family: 'SarasaMonoSC', monospace;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(116, 247, 253, 0.08);
+  border: 1px solid rgba(116, 247, 253, 0.18);
+  color: rgba(116, 247, 253, 0.7);
+}
+
+/* ============================================================
+ * 图层面板
+ * ============================================================ */
+.layer-panel {
+  width: 180px;
+  background: linear-gradient(180deg, rgba(5, 50, 106, 0.4), rgba(2, 14, 31, 0.5));
+  border-left: 1px solid rgba(116, 247, 253, 0.12);
+  padding: 16px;
+}
+
+.layer-panel-title {
+  font-family: 'DouyuFont', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(116, 247, 253, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+}
+
+.layer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(116, 247, 253, 0.08);
+}
+
+.layer-item:last-child {
+  border-bottom: none;
+}
+
+.layer-label {
+  font-family: 'SarasaMonoSC', sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.layer-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.opacity-control,
+.zoom-control {
+  margin-top: 14px;
+}
+
+.control-label {
+  font-family: 'SarasaMonoSC', sans-serif;
+  font-size: 11px;
+  color: rgba(185, 207, 255, 0.6);
+  margin-bottom: 6px;
+}
+
+.control-value {
+  font-family: 'SarasaMonoSC', monospace;
+  color: #74f7fd;
+}
+
+/* ============================================================
+ * 顶栏 AI 行动按钮 + 保存
+ * ============================================================ */
+.ai-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'DouyuFont', sans-serif;
+  letter-spacing: 1px;
+  margin-right: 8px;
+  transition: all 0.2s;
+  background: linear-gradient(135deg, rgba(116, 247, 253, 0.15), rgba(91, 199, 250, 0.15));
+  border: 1px solid rgba(116, 247, 253, 0.45);
+  color: #74f7fd;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ai-action-btn:not(:disabled):hover {
+  background: linear-gradient(135deg, rgba(116, 247, 253, 0.3), rgba(91, 199, 250, 0.3));
+  box-shadow: 0 0 14px rgba(116, 247, 253, 0.4);
+  transform: translateY(-1px);
+}
+
+.ai-action-btn.revert-btn {
+  background: linear-gradient(135deg, rgba(255, 138, 138, 0.15), rgba(249, 115, 22, 0.15));
+  border-color: rgba(255, 138, 138, 0.45);
+  color: #ff8a8a;
+}
+
+.ai-action-btn.revert-btn:not(:disabled):hover {
+  background: linear-gradient(135deg, rgba(255, 138, 138, 0.3), rgba(249, 115, 22, 0.3));
+  box-shadow: 0 0 14px rgba(255, 138, 138, 0.4);
+}
+
+.ai-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #666;
+}
+
+/* 保存按钮 */
+.save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #74f7fd 0%, #5bc7fa 50%, #a78bfa 100%);
+  border: none;
+  color: #02060f;
+  font-family: 'DouyuFont', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(116, 247, 253, 0.35);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.save-btn:hover {
+  box-shadow: 0 4px 18px rgba(116, 247, 253, 0.55);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+ * 响应式
+ * ============================================================ */
+@media (max-width: 1280px) {
+  .toolbar-divider {
+    margin: 0 2px;
+  }
+  .brush-size-slider {
+    width: 80px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .class-panel {
+    width: 160px;
+  }
+  .layer-panel {
+    width: 150px;
+  }
+}
+
+@media (max-width: 900px) {
+  .annotation-workspace {
+    flex-direction: column;
+  }
+  .class-panel,
+  .layer-panel {
+    width: 100%;
+    flex-direction: row;
+    border: none;
+    border-bottom: 1px solid rgba(116, 247, 253, 0.12);
+  }
+}
