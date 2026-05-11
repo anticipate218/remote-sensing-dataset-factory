@@ -1,5 +1,10 @@
 version: '3.8'
 
+# ============================================================
+# 部署前请确保仓库根目录已存在 .env 文件（可由 .env.example 复制而来），
+# 且至少填写了 JWT_SECRET；否则 backend 容器启动时会因为强校验直接退出。
+# ============================================================
+
 services:
   backend:
     build:
@@ -11,6 +16,11 @@ services:
       - ./uploads:/app/uploads
       - ./outputs:/app/outputs
       - ./weights:/app/weights
+    # 1) env_file: 把整个 .env 注入容器（覆盖范围最广，推荐）
+    env_file:
+      - .env
+    # 2) environment: 显式声明部分运行时变量；这里只放容器内强相关的少量值，
+    #    其余敏感配置统一由 env_file 提供。
     environment:
       - KMP_DUPLICATE_LIB_OK=TRUE
       - CUDA_VISIBLE_DEVICES=0
@@ -33,7 +43,7 @@ services:
       - backend
     restart: unless-stopped
 
-  # 可選：Redis (用於 Celery)
+  # 可选：Redis (用于 Celery)
   # redis:
   #   image: redis:7-alpine
   #   ports:

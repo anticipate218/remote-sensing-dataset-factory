@@ -89,6 +89,17 @@ python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
 cd frontend && npm run dev
 ```
 
+**Docker 一键起：**
+
+```bash
+# 1) 复制并填好环境变量（至少要填 JWT_SECRET，否则后端容器会启动失败）
+cp .env.example .env
+#  Windows PowerShell: Copy-Item .env.example .env
+
+# 2) 启动全栈（默认会读取仓库根目录的 .env 注入 backend 容器）
+docker compose up --build
+```
+
 访问：
 
 - 前端 UI：http://localhost:3000

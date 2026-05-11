@@ -1,36 +1,61 @@
 # RS Dataset Factory - Python Dependencies
-# 在 deeplearning1 環境中安裝
+# 推荐先 `conda activate` 一个含 PyTorch 的环境再安装。
+#
+# 依赖分两档：
+#   1) 最小可启动（仅启动 FastAPI + 加载 SAM 3 主分割）        — 见「Core」
+#   2) 全功能（YOLOv8 / HF 精修 / 超分 / LLM 助手）            — 见「Optional features」
+# 想要尽量轻量启动可以注释掉 Optional features 段。
 
-# Web Framework
+# =============================================================
+# Core - Web framework / auth / IO
+# =============================================================
 fastapi>=0.109.0
 uvicorn[standard]>=0.27.0
 python-multipart>=0.0.6
 websockets>=12.0
+pydantic>=2.5.0
+PyJWT>=2.8.0                  # backend/auth.py: 用户认证 token
+httpx>=0.27.0                 # LLM 调用 + HF 下载侧路使用的异步 HTTP 客户端
 
-# Task Queue (可選，用於大規模部署)
-# celery>=5.3.0
-# redis>=5.0.0
-
-# Image Processing
+# =============================================================
+# Image / GeoTIFF processing
+# =============================================================
 Pillow>=10.0.0
 numpy>=1.24.0
 rasterio>=1.3.0
+opencv-python>=4.8.0          # 部分预处理 / 可视化用到 cv2
 
-# Deep Learning (通常已安裝)
-# torch>=2.0.0
-# torchvision>=0.15.0
-
+# =============================================================
 # Visualization
+# =============================================================
 matplotlib>=3.7.0
 scipy>=1.11.0
 
+# =============================================================
 # Progress & Utils
+# =============================================================
 tqdm>=4.65.0
 psutil>=5.9.0
-
-# Model Loading
-huggingface_hub>=0.20.0
 iopath>=0.1.10
 
-# Pydantic for data validation
-pydantic>=2.5.0
+# =============================================================
+# Deep Learning (通常已经在 conda 环境里装好；若没有取消注释)
+# =============================================================
+# torch>=2.0.0
+# torchvision>=0.15.0
+
+# =============================================================
+# Optional features
+#   - HF 精修 (Mask2Former / SegFormer / OneFormer / UperNet / DINOv2)
+#   - YOLOv8 / OBB
+#   - 模型管理页一键下载
+# =============================================================
+huggingface_hub>=0.20.0
+transformers>=4.40.0          # backend/services/hf_refine_service.py
+ultralytics>=8.1.0             # YOLOv8 / OBB 推理
+
+# =============================================================
+# Task Queue (仅在大规模分布式部署时打开)
+# =============================================================
+# celery>=5.3.0
+# redis>=5.0.0

@@ -20,7 +20,7 @@ import GlobeBackground from '../Layout/GlobeBackground';
 import WidgetPanel from '../MFLayout/WidgetPanel';
 import { useAppStore } from '../../stores/appStore';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = '/api';
 
 const inputAffixBase: React.CSSProperties = {
   height: 46,
