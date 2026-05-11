@@ -10,11 +10,38 @@
 
 ## 截图
 
-|  | |
-|---|---|
-| ![](docs/screenshots/01_dashboard.png) **总览仪表盘** | ![](docs/screenshots/02_class_config.png) **类别预设 / 自定义** |
-| ![](docs/screenshots/03_segmentation_result.png) **分割结果可视化** | ![](docs/screenshots/04_ai_diagnose.png) **AI 数据集诊断** |
-| ![](docs/screenshots/05_dataset_stats.png) **类别分布统计** | ![](docs/screenshots/06_model_management.png) **预训练模型管理** |
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/01_dashboard.png" width="100%" alt="总览仪表盘"/><br/>
+      <sub><b>总览仪表盘</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/02_class_config.png" width="100%" alt="类别预设 / 自定义"/><br/>
+      <sub><b>类别预设 / 自定义</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/03_segmentation_result.png" width="100%" alt="分割结果可视化"/><br/>
+      <sub><b>分割结果可视化</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/04_ai_diagnose.png" width="100%" alt="AI 数据集诊断"/><br/>
+      <sub><b>AI 数据集诊断</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/05_dataset_stats.png" width="100%" alt="类别分布统计"/><br/>
+      <sub><b>类别分布统计</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/06_model_management.png" width="100%" alt="预训练模型管理"/><br/>
+      <sub><b>预训练模型管理</b></sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
